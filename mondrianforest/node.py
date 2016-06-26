@@ -48,7 +48,6 @@ class ClassifierStat(object):
             res[label] = prob
         return res
 
-
     def __repr__(self):
         return "<mondrianforest.ClassifierStat stats={}".format(
             self.stats,
