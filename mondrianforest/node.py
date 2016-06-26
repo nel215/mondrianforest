@@ -13,6 +13,12 @@ class ClassifierStat(object):
         self.sum += x
         self.count += 1
 
+    def merge(self, s):
+        res = ClassifierStat()
+        res.count = self.count + s.count
+        res.sum = self.sum + s.sum
+        return res
+
 
 class Node(object):
     def __init__(self, min_list, max_list, tau, is_leaf, parent=None, delta=None, xi=None):
