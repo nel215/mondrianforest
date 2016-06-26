@@ -4,25 +4,33 @@ import numpy as np
 
 class ClassifierStat(object):
     def __init__(self):
-        self.count = 0
-        self.sum = None
+        self.stats = {}
 
-    def add(self, x):
-        if self.sum is None:
-            self.sum = np.zeros(len(x))
-        self.sum += x
-        self.count += 1
+    def add(self, x, label):
+        if label not in self.stats:
+            self.stats[label] = {'count': 0, 'sum': np.zeros(len(x))}
+        self.stats[label]['sum'] += x
+        self.stats[label]['count'] += 1
 
     def merge(self, s):
         res = ClassifierStat()
-        res.count = self.count + s.count
-        res.sum = self.sum + s.sum
+        labels = set(self.stats.keys()) | set(s.stats.keys())
+        for label in labels:
+            res.stats[label] = {}
+            if label in self.stats and label in s.stats:
+                res.stats[label]['count'] = self.stats[label]['count'] + s.stats[label]['count']
+                res.stats[label]['sum'] = self.stats[label]['sum'] + s.stats[label]['sum']
+            elif label in self.stats:
+                res.stats[label]['count'] = self.stats[label]['count']
+                res.stats[label]['sum'] = self.stats[label]['sum']
+            else:
+                res.stats[label]['count'] = s.stats[label]['count']
+                res.stats[label]['sum'] = s.stats[label]['sum']
         return res
 
     def __repr__(self):
-        return "<mondrianforest.ClassifierStat count={} sum={}".format(
-            self.count,
-            self.sum,
+        return "<mondrianforest.ClassifierStat stats={}".format(
+            self.stats,
         )
 
 
@@ -37,22 +45,13 @@ class Node(object):
         self.xi = xi
         self.left = None
         self.right = None
-        self.stats = {}
+        self.stat = ClassifierStat()
 
     def update_leaf(self, x, label):
-        if label not in self.stats:
-            self.stats[label] = ClassifierStat()
-        self.stats[label].add(x)
+        self.stat.add(x, label)
 
     def update_internal(self):
-        labels = set(self.left.stats.keys()) | set(self.right.stats.keys())
-        for label in labels:
-            if label in self.left.stats and label in self.right.stats:
-                self.stats[label] = self.left.stats[label].merge(self.right.stats[label])
-            elif label in self.left.stats:
-                self.stats[label] = self.left.stats[label]
-            else:
-                self.stats[label] = self.right.stats[label]
+        self.stat = self.left.stat.merge(self.right.stat)
 
     def get_parent_tau(self):
         if self.parent is None:
