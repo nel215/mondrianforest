@@ -25,6 +25,7 @@ class ClassifierStat(object):
             self.sum,
         )
 
+
 class Node(object):
     def __init__(self, min_list, max_list, tau, is_leaf, parent=None, delta=None, xi=None):
         self.parent = parent
