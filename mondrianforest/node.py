@@ -25,6 +25,12 @@ class Node(object):
         self.xi = xi
         self.left = None
         self.right = None
+        self.stats = {}
+
+    def update_leaf(self, x, label):
+        if label not in self.stats:
+            self.stats[label] = ClassifierStat()
+        self.stats[label].add(x)
 
     def get_parent_tau(self):
         if self.parent is None:
@@ -45,16 +51,18 @@ class MondrianTree(object):
     def __init__(self):
         self.root = None
 
-    def create_leaf(self, x, parent):
-        return Node(
+    def create_leaf(self, x, label, parent):
+        leaf = Node(
             min_list=x.copy(),
             max_list=x.copy(),
             is_leaf=True,
             tau=1e9,
             parent=parent,
         )
+        leaf.update_leaf(x, label)
+        return leaf
 
-    def extend_mondrian_block(self, node, x):
+    def extend_mondrian_block(self, node, x, label):
         '''
             return root of sub-tree
         '''
@@ -79,7 +87,7 @@ class MondrianTree(object):
                 delta=delta,
                 xi=xi,
             )
-            sibling = self.create_leaf(x, parent=parent)
+            sibling = self.create_leaf(x, label, parent=parent)
             if x[parent.delta] <= parent.xi:
                 parent.left = sibling
                 parent.right = node
@@ -93,14 +101,16 @@ class MondrianTree(object):
             node.max_list = np.maximum(x, node.max_list)
             if not node.is_leaf:
                 if x[node.delta] <= node.xi:
-                    node.left = self.extend_mondrian_block(node.left, x)
+                    node.left = self.extend_mondrian_block(node.left, x, label)
                 else:
-                    node.right = self.extend_mondrian_block(node.right, x)
+                    node.right = self.extend_mondrian_block(node.right, x, label)
+            else:
+                node.update_leaf(x, label)
             return node
 
     def partial_fit(self, X, y):
         for x, label in zip(X, y):
             if self.root is None:
-                self.root = self.create_leaf(x, parent=None)
+                self.root = self.create_leaf(x, label, parent=None)
             else:
-                self.root = self.extend_mondrian_block(self.root, x)
+                self.root = self.extend_mondrian_block(self.root, x, label)
