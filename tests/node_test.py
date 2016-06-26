@@ -6,9 +6,11 @@ import numpy as np
 def test_partial_fit():
     np.random.seed(215)
     tree = node.MondrianTree()
-    X = np.array([[1.0, 2.0], [0.0, -1.0]])
-    y = np.array([1, 0])
+    X = np.array([[1.0, 2.0], [0.0, -1.0], [0.0, 3.0]])
+    y = np.array([1, 0, 0])
     tree.partial_fit(X, y)
     assert tree.root.parent is None
     assert tree.root.min_list.tolist() == [0, -1]
-    assert tree.root.max_list.tolist() == [1, 2]
+    assert tree.root.max_list.tolist() == [1, 3]
+    assert tree.root.left.is_leaf is True
+    assert tree.root.right.is_leaf is False

@@ -77,7 +77,11 @@ class MondrianTree(object):
         else:
             node.min_list = np.minimum(x, node.min_list)
             node.max_list = np.maximum(x, node.max_list)
-            # TODO: if not self.is_leaf
+            if not node.is_leaf:
+                if x[node.delta] <= node.xi:
+                    node.left = self.extend_mondrian_block(node.left, x)
+                else:
+                    node.right = self.extend_mondrian_block(node.right, x)
             return node
 
     def partial_fit(self, X, y):
