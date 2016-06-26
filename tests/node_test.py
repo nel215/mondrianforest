@@ -1,11 +1,11 @@
 # coding:utf-8
-from mondrianforest import node
+import mondrianforest
 import numpy as np
 
 
 def test_partial_fit():
     np.random.seed(215)
-    tree = node.MondrianTree()
+    tree = mondrianforest.MondrianTree()
     X = np.array([[1.0, 2.0], [0.0, -1.0], [0.0, 3.0]])
     y = np.array([1, 0, 0])
     tree.partial_fit(X, y)
@@ -22,7 +22,7 @@ def test_partial_fit():
 
 
 def test_classifier_stat_update():
-    stat = node.Classifier()
+    stat = mondrianforest.Classifier()
     stat.add(np.array([1, 2, 3]), 0)
     stat.add(np.array([1, 2, 4]), 0)
     stat.add(np.array([0, -1, -2]), 1)
