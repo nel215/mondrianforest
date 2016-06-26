@@ -8,8 +8,13 @@ class ClassifierStat(object):
 
     def add(self, x, label):
         if label not in self.stats:
-            self.stats[label] = {'count': 0, 'sum': np.zeros(len(x))}
+            self.stats[label] = {
+                'sum': np.zeros(len(x)),
+                'sq_sum': np.zeros(len(x)),
+                'count': 0,
+            }
         self.stats[label]['sum'] += x
+        self.stats[label]['sq_sum'] += x*x
         self.stats[label]['count'] += 1
 
     def merge(self, s):
