@@ -19,6 +19,11 @@ class ClassifierStat(object):
         res.sum = self.sum + s.sum
         return res
 
+    def __repr__(self):
+        return "<mondrianforest.ClassifierStat count={} sum={}".format(
+            self.count,
+            self.sum,
+        )
 
 class Node(object):
     def __init__(self, min_list, max_list, tau, is_leaf, parent=None, delta=None, xi=None):
