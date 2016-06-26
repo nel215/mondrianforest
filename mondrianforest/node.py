@@ -10,7 +10,7 @@ class ClassifierStat(object):
         if label not in self.stats:
             self.stats[label] = {
                 'sum': np.zeros(len(x)),
-                'sq_sum': np.zeros(len(x)),
+                'sq_sum': 0,
                 'count': 0,
             }
         self.stats[label]['sum'] += x

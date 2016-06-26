@@ -21,7 +21,8 @@ def test_partial_fit():
 def test_classifier_stat_update():
     stat = node.ClassifierStat()
     stat.add(np.array([1, 2, 3]), 0)
-    stat.add(np.array([1, 2, 3]), 0)
-    assert stat.stats[0]['sum'].tolist() == [2, 4, 6]
-    assert stat.stats[0]['sq_sum'].tolist() == [2, 8, 18]
+    stat.add(np.array([1, 2, 4]), 0)
+    stat.add(np.array([0, -1, -2]), 1)
+    assert stat.stats[0]['sum'].tolist() == [2, 4, 7]
+    assert stat.stats[0]['sq_sum'].tolist() == [2, 8, 25]
     assert stat.stats[0]['count'] == 2
