@@ -43,6 +43,16 @@ class Node(object):
             self.stats[label] = ClassifierStat()
         self.stats[label].add(x)
 
+    def update_internal(self):
+        labels = set(self.left.stats.keys()) | set(self.right.stats.keys())
+        for label in labels:
+            if label in self.left.stats and label in self.right.stats:
+                self.stats[label] = self.left.stats[label].merge(self.right.stats[label])
+            elif label in self.left.stats:
+                self.stats[label] = self.left.stats[label]
+            else:
+                self.stats[label] = self.right.stats[label]
+
     def get_parent_tau(self):
         if self.parent is None:
             return 0.0
@@ -106,6 +116,7 @@ class MondrianTree(object):
                 parent.left = node
                 parent.right = sibling
             node.parent = parent
+            parent.update_internal()
             return parent
         else:
             node.min_list = np.minimum(x, node.min_list)
@@ -115,6 +126,7 @@ class MondrianTree(object):
                     node.left = self.extend_mondrian_block(node.left, x, label)
                 else:
                     node.right = self.extend_mondrian_block(node.right, x, label)
+                node.update_internal()
             else:
                 node.update_leaf(x, label)
             return node

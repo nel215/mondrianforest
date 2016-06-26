@@ -14,6 +14,8 @@ def test_partial_fit():
     assert tree.root.max_list.tolist() == [1, 3]
     assert tree.root.left.is_leaf is True
     assert tree.root.right.is_leaf is False
+    assert tree.root.stats[0].sum.tolist() == [0, 2]
+    assert tree.root.stats[0].count == 2
 
 
 def test_classifier_stat_update():
