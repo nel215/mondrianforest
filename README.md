@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/nel215/mondrianforest.svg?branch=feature%2Fadd_ci)](https://travis-ci.org/nel215/mondrianforest)
+
 # References
 
 ## Papers
