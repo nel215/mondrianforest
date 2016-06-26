@@ -2,7 +2,7 @@
 import numpy as np
 
 
-class ClassifierStat(object):
+class Classifier(object):
     def __init__(self):
         self.stats = {}
 
@@ -18,7 +18,7 @@ class ClassifierStat(object):
         self.stats[label]['count'] += 1
 
     def merge(self, s):
-        res = ClassifierStat()
+        res = Classifier()
         labels = set(self.stats.keys()) | set(s.stats.keys())
         for label in labels:
             res.stats[label] = {}
@@ -49,7 +49,7 @@ class ClassifierStat(object):
         return res
 
     def __repr__(self):
-        return "<mondrianforest.ClassifierStat stats={}".format(
+        return "<mondrianforest.Classifier stats={}".format(
             self.stats,
         )
 
@@ -65,7 +65,7 @@ class Node(object):
         self.xi = xi
         self.left = None
         self.right = None
-        self.stat = ClassifierStat()
+        self.stat = Classifier()
 
     def update_leaf(self, x, label):
         self.stat.add(x, label)

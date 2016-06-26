@@ -22,7 +22,7 @@ def test_partial_fit():
 
 
 def test_classifier_stat_update():
-    stat = node.ClassifierStat()
+    stat = node.Classifier()
     stat.add(np.array([1, 2, 3]), 0)
     stat.add(np.array([1, 2, 4]), 0)
     stat.add(np.array([0, -1, -2]), 1)
