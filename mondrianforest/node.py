@@ -45,6 +45,15 @@ class MondrianTree(object):
     def __init__(self):
         self.root = None
 
+    def create_leaf(self, x, parent):
+        return Node(
+            min_list=x.copy(),
+            max_list=x.copy(),
+            is_leaf=True,
+            tau=1e9,
+            parent=parent,
+        )
+
     def extend_mondrian_block(self, node, x):
         '''
             return root of sub-tree
@@ -70,13 +79,7 @@ class MondrianTree(object):
                 delta=delta,
                 xi=xi,
             )
-            sibling = Node(
-                min_list=x,
-                max_list=x,
-                is_leaf=True,
-                tau=1e9,
-                parent=parent,
-            )
+            sibling = self.create_leaf(x, parent=parent)
             if x[parent.delta] <= parent.xi:
                 parent.left = sibling
                 parent.right = node
@@ -99,6 +102,6 @@ class MondrianTree(object):
     def partial_fit(self, X, y):
         for x, label in zip(X, y):
             if self.root is None:
-                self.root = Node(min_list=x, max_list=x, is_leaf=True, tau=1e9)
+                self.root = self.create_leaf(x, parent=None)
             else:
                 self.root = self.extend_mondrian_block(self.root, x)
