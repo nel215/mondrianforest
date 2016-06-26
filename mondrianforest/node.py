@@ -11,6 +11,8 @@ class Node(object):
         self.max_list = max_list
         self.delta = delta
         self.xi = xi
+        self.left = None
+        self.right = None
 
     def get_parent_tau(self):
         if self.parent is None:
