@@ -20,10 +20,11 @@ class Node(object):
         return self.parent.tau
 
     def __repr__(self):
-        return "<mondrianforest.Node tau={} min_list={} max_list={}>".format(
+        return "<mondrianforest.Node tau={} min_list={} max_list={} is_leaf={}>".format(
             self.tau,
             self.min_list,
-            self.max_list
+            self.max_list,
+            self.is_leaf,
         )
 
 
