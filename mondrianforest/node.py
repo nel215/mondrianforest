@@ -23,14 +23,17 @@ class ClassifierStat(object):
         for label in labels:
             res.stats[label] = {}
             if label in self.stats and label in s.stats:
-                res.stats[label]['count'] = self.stats[label]['count'] + s.stats[label]['count']
                 res.stats[label]['sum'] = self.stats[label]['sum'] + s.stats[label]['sum']
+                res.stats[label]['sq_sum'] = self.stats[label]['sq_sum'] + s.stats[label]['sq_sum']
+                res.stats[label]['count'] = self.stats[label]['count'] + s.stats[label]['count']
             elif label in self.stats:
-                res.stats[label]['count'] = self.stats[label]['count']
                 res.stats[label]['sum'] = self.stats[label]['sum']
+                res.stats[label]['sq_sum'] = self.stats[label]['sq_sum']
+                res.stats[label]['count'] = self.stats[label]['count']
             else:
-                res.stats[label]['count'] = s.stats[label]['count']
                 res.stats[label]['sum'] = s.stats[label]['sum']
+                res.stats[label]['sq_sum'] = s.stats[label]['sq_sum']
+                res.stats[label]['count'] = s.stats[label]['count']
         return res
 
     def predict_proba(self, x):
