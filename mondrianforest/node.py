@@ -83,11 +83,10 @@ class MondrianTree(object):
             if x[parent.delta] <= parent.xi:
                 parent.left = sibling
                 parent.right = node
-                node.parent = parent
             else:
                 parent.left = node
                 parent.right = sibling
-                node.parent = parent
+            node.parent = parent
             return parent
         else:
             node.min_list = np.minimum(x, node.min_list)
