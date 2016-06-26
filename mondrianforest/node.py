@@ -2,6 +2,18 @@
 import numpy as np
 
 
+class ClassifierStat(object):
+    def __init__(self):
+        self.count = 0
+        self.sum = None
+
+    def add(self, x):
+        if self.sum is None:
+            self.sum = np.zeros(len(x))
+        self.sum += x
+        self.count += 1
+
+
 class Node(object):
     def __init__(self, min_list, max_list, tau, is_leaf, parent=None, delta=None, xi=None):
         self.parent = parent

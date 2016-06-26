@@ -14,3 +14,11 @@ def test_partial_fit():
     assert tree.root.max_list.tolist() == [1, 3]
     assert tree.root.left.is_leaf is True
     assert tree.root.right.is_leaf is False
+
+
+def test_classifier_stat_update():
+    stat = node.ClassifierStat()
+    stat.add(np.array([1, 2, 3]))
+    stat.add(np.array([1, 2, 3]))
+    assert stat.sum.tolist() == [2, 4, 6]
+    assert stat.count == 2
