@@ -17,6 +17,9 @@ def test_partial_fit():
     assert tree.root.stat.stats[0]['sum'].tolist() == [0, 2]
     assert tree.root.stat.stats[0]['count'] == 2
 
+    proba = tree.predict_proba(np.array([[1.0, 2.0]]))[0]
+    assert proba[1] > proba[0]
+
 
 def test_classifier_stat_update():
     stat = node.ClassifierStat()

@@ -158,3 +158,31 @@ class MondrianTree(object):
                 self.root = self.create_leaf(x, label, parent=None)
             else:
                 self.root = self.extend_mondrian_block(self.root, x, label)
+
+    def predict_proba(self, X):
+        def rec(x, node, p_not_separeted_yet):
+            d = node.tau - node.get_parent_tau()
+            gamma = np.sum(np.maximum(x-node.min_list, 0) + np.maximum(node.max_list - x, 0))
+            p = 1.0 - np.exp(-d*gamma)
+            if node.is_leaf:
+                w = p_not_separeted_yet * (1.0 - p)
+                probs = node.stat.predict_proba(x)
+                for label in probs.keys():
+                    probs[label] *= w
+                return probs
+            w = p_not_separeted_yet * p
+            if x[node.delta] <= node.xi:
+                sum_probs = rec(x, node.left, p_not_separeted_yet*(1.0-p))
+            else:
+                sum_probs = rec(x, node.right, p_not_separeted_yet*(1.0-p))
+            probs = node.stat.predict_proba(x)
+            for label in probs.keys():
+                if label not in sum_probs:
+                    sum_probs[label] = 0
+                sum_probs[label] += w*probs[label]
+            return sum_probs
+
+        res = []
+        for x in X:
+            res.append(rec(x, self.root, 1.0))
+        return res
