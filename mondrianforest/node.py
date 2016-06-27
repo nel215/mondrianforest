@@ -141,3 +141,14 @@ class MondrianTree(object):
             prob = rec(x, self.root, 1.0)
             res.append(np.array([prob[l] for l in self.classes]))
         return res
+
+    def score(self, X, y):
+        probs = self.predict_proba(X)
+        classes = np.array([c for c in self.classes])
+        correct = 0.0
+        for prob, label in zip(probs, y):
+            correct += prob.argmax() == (classes==label).argmax()
+        return correct / len(X)
+
+    def get_params(self, deep):
+        return {}
