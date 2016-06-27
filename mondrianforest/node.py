@@ -147,7 +147,7 @@ class MondrianTree(object):
         classes = np.array([c for c in self.classes])
         correct = 0.0
         for prob, label in zip(probs, y):
-            correct += prob.argmax() == (classes==label).argmax()
+            correct += prob.argmax() == (classes == label).argmax()
         return correct / len(X)
 
     def get_params(self, deep):
