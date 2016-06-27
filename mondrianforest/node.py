@@ -40,6 +40,7 @@ class Node(object):
 class MondrianTree(object):
     def __init__(self):
         self.root = None
+        self.classes = set()
 
     def create_leaf(self, x, label, parent):
         leaf = Node(
@@ -102,6 +103,7 @@ class MondrianTree(object):
 
     def partial_fit(self, X, y):
         for x, label in zip(X, y):
+            self.classes |= {label}
             if self.root is None:
                 self.root = self.create_leaf(x, label, parent=None)
             else:
@@ -132,5 +134,6 @@ class MondrianTree(object):
 
         res = []
         for x in X:
-            res.append(rec(x, self.root, 1.0))
+            prob = rec(x, self.root, 1.0)
+            res.append(np.array([prob[l] for l in self.classes]))
         return res
