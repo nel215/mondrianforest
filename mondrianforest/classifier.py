@@ -2,6 +2,24 @@
 import numpy as np
 
 
+class ClassifierResult(object):
+    def __init__(self, probs):
+        self.probs = probs
+
+    def merge(self, r):
+        probs = {}
+        for label in (set(r.probs.keys()) | set(self.probs.keys())):
+            probs[label] = 0.0
+            if label in self.probs:
+                probs[label] += self.probs[label]
+            if label in r.probs:
+                probs[label] += r.probs[label]
+        return ClassifierResult(probs)
+
+    def get(self):
+        return self.probs
+
+
 class Classifier(object):
     def __init__(self):
         self.stats = {}
@@ -10,7 +28,7 @@ class Classifier(object):
         probs = self.predict_proba(x)
         for label in probs.keys():
             probs[label] *= w
-        return probs
+        return ClassifierResult(probs)
 
     def add(self, x, label):
         if label not in self.stats:

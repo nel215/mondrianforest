@@ -125,17 +125,13 @@ class MondrianTreeClassifier(object):
                 return node.stat.create_result(x, w)
             w = p_not_separeted_yet * p
             if x[node.delta] <= node.xi:
-                sum_probs = rec(x, node.left, p_not_separeted_yet*(1.0-p))
+                child_result = rec(x, node.left, p_not_separeted_yet*(1.0-p))
             else:
-                sum_probs = rec(x, node.right, p_not_separeted_yet*(1.0-p))
-            probs = node.stat.predict_proba(x)
-            for label in probs.keys():
-                if label not in sum_probs:
-                    sum_probs[label] = 0
-                sum_probs[label] += w*probs[label]
-            return sum_probs
+                child_result = rec(x, node.right, p_not_separeted_yet*(1.0-p))
+            result = node.stat.create_result(x, w)
+            return result.merge(child_result)
 
         res = []
         for x in X:
-            res.append(rec(x, self.root, 1.0))
+            res.append(rec(x, self.root, 1.0).get())
         return res
