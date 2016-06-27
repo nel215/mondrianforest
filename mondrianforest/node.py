@@ -37,7 +37,7 @@ class Node(object):
 
 
 # TODO: extends BaseClassifier
-class MondrianTree(object):
+class MondrianTreeClassifier(object):
     def __init__(self):
         self.root = None
 

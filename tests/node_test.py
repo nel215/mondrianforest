@@ -5,7 +5,7 @@ import numpy as np
 
 def test_partial_fit():
     np.random.seed(215)
-    tree = mondrianforest.MondrianTree()
+    tree = mondrianforest.MondrianTreeClassifier()
     X = np.array([[1.0, 2.0], [0.0, -1.0], [0.0, 3.0]])
     y = np.array([1, 0, 0])
     tree.partial_fit(X, y)
