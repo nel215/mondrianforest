@@ -6,6 +6,12 @@ class Classifier(object):
     def __init__(self):
         self.stats = {}
 
+    def create_result(self, x, w):
+        probs = self.predict_proba(x)
+        for label in probs.keys():
+            probs[label] *= w
+        return probs
+
     def add(self, x, label):
         if label not in self.stats:
             self.stats[label] = {

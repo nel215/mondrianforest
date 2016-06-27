@@ -122,10 +122,7 @@ class MondrianTreeClassifier(object):
             p = 1.0 - np.exp(-d*gamma)
             if node.is_leaf:
                 w = p_not_separeted_yet * (1.0 - p)
-                probs = node.stat.predict_proba(x)
-                for label in probs.keys():
-                    probs[label] *= w
-                return probs
+                return node.stat.create_result(x, w)
             w = p_not_separeted_yet * p
             if x[node.delta] <= node.xi:
                 sum_probs = rec(x, node.left, p_not_separeted_yet*(1.0-p))
