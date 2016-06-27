@@ -109,6 +109,10 @@ class MondrianTree(object):
             else:
                 self.root = self.extend_mondrian_block(self.root, x, label)
 
+    def fit(self, X, y):
+        self.root = None
+        self.partial_fit(X, y)
+
     def predict_proba(self, X):
         def rec(x, node, p_not_separeted_yet):
             d = node.tau - node.get_parent_tau()
