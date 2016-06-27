@@ -40,6 +40,7 @@ class Node(object):
 class MondrianTree(object):
     def __init__(self):
         self.root = None
+        self.classes = set()
 
     def create_leaf(self, x, label, parent):
         leaf = Node(
@@ -102,10 +103,15 @@ class MondrianTree(object):
 
     def partial_fit(self, X, y):
         for x, label in zip(X, y):
+            self.classes |= {label}
             if self.root is None:
                 self.root = self.create_leaf(x, label, parent=None)
             else:
                 self.root = self.extend_mondrian_block(self.root, x, label)
+
+    def fit(self, X, y):
+        self.root = None
+        self.partial_fit(X, y)
 
     def predict_proba(self, X):
         def rec(x, node, p_not_separeted_yet):
@@ -132,5 +138,17 @@ class MondrianTree(object):
 
         res = []
         for x in X:
-            res.append(rec(x, self.root, 1.0))
+            prob = rec(x, self.root, 1.0)
+            res.append(np.array([prob[l] for l in self.classes]))
         return res
+
+    def score(self, X, y):
+        probs = self.predict_proba(X)
+        classes = np.array([c for c in self.classes])
+        correct = 0.0
+        for prob, label in zip(probs, y):
+            correct += prob.argmax() == (classes == label).argmax()
+        return correct / len(X)
+
+    def get_params(self, deep):
+        return {}
