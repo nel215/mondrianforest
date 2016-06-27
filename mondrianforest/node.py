@@ -4,7 +4,7 @@ from .classifier import Classifier
 
 
 class Node(object):
-    def __init__(self, min_list, max_list, tau, is_leaf, parent=None, delta=None, xi=None):
+    def __init__(self, min_list, max_list, tau, is_leaf, stat, parent=None, delta=None, xi=None):
         self.parent = parent
         self.tau = tau
         self.is_leaf = is_leaf
@@ -14,7 +14,7 @@ class Node(object):
         self.xi = xi
         self.left = None
         self.right = None
-        self.stat = Classifier()
+        self.stat = stat
 
     def update_leaf(self, x, label):
         self.stat.add(x, label)
@@ -36,16 +36,23 @@ class Node(object):
         )
 
 
+class ClassifierFactory(object):
+    def create(self):
+        return Classifier()
+
+
 # TODO: extends BaseClassifier
 class MondrianTreeClassifier(object):
     def __init__(self):
         self.root = None
+        self.stat_factory = ClassifierFactory()
 
     def create_leaf(self, x, label, parent):
         leaf = Node(
             min_list=x.copy(),
             max_list=x.copy(),
             is_leaf=True,
+            stat=self.stat_factory.create(),
             tau=1e9,
             parent=parent,
         )
@@ -72,6 +79,7 @@ class MondrianTreeClassifier(object):
                 min_list=np.minimum(node.min_list, x),
                 max_list=np.maximum(node.max_list, x),
                 is_leaf=False,
+                stat=self.stat_factory.create(),
                 tau=node.get_parent_tau() + E,
                 parent=node.parent,
                 delta=delta,
