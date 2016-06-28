@@ -41,11 +41,9 @@ class ClassifierFactory(object):
         return Classifier()
 
 
-# TODO: extends BaseClassifier
-class MondrianTreeClassifier(object):
+class MondrianTree(object):
     def __init__(self):
         self.root = None
-        self.stat_factory = ClassifierFactory()
         self.classes = set()
 
     def create_leaf(self, x, label, parent):
@@ -153,3 +151,10 @@ class MondrianTreeClassifier(object):
 
     def get_params(self, deep):
         return {}
+
+
+# TODO: extends BaseClassifier
+class MondrianTreeClassifier(MondrianTree):
+    def __init__(self):
+        MondrianTree.__init__(self)
+        self.stat_factory = ClassifierFactory()
