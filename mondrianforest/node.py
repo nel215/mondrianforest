@@ -119,25 +119,35 @@ class MondrianTree(object):
         self.root = None
         self.partial_fit(X, y)
 
-    def predict_proba(self, X):
-        def rec(x, node, p_not_separeted_yet):
-            d = node.tau - node.get_parent_tau()
-            gamma = np.sum(np.maximum(x-node.min_list, 0) + np.maximum(node.max_list - x, 0))
-            p = 1.0 - np.exp(-d*gamma)
-            if node.is_leaf:
-                w = p_not_separeted_yet * (1.0 - p)
-                return node.stat.create_result(x, w)
-            w = p_not_separeted_yet * p
-            if x[node.delta] <= node.xi:
-                child_result = rec(x, node.left, p_not_separeted_yet*(1.0-p))
-            else:
-                child_result = rec(x, node.right, p_not_separeted_yet*(1.0-p))
-            result = node.stat.create_result(x, w)
-            return result.merge(child_result)
+    def _predict(self, x, node, p_not_separeted_yet):
+        d = node.tau - node.get_parent_tau()
+        gamma = np.sum(np.maximum(x-node.min_list, 0) + np.maximum(node.max_list - x, 0))
+        p = 1.0 - np.exp(-d*gamma)
+        if node.is_leaf:
+            w = p_not_separeted_yet * (1.0 - p)
+            return node.stat.create_result(x, w)
+        w = p_not_separeted_yet * p
+        if x[node.delta] <= node.xi:
+            child_result = self._predict(x, node.left, p_not_separeted_yet*(1.0-p))
+        else:
+            child_result = self._predict(x, node.right, p_not_separeted_yet*(1.0-p))
+        result = node.stat.create_result(x, w)
+        return result.merge(child_result)
 
+    def get_params(self, deep):
+        return {}
+
+
+# TODO: extends BaseClassifier
+class MondrianTreeClassifier(MondrianTree):
+    def __init__(self):
+        MondrianTree.__init__(self)
+        self.stat_factory = ClassifierFactory()
+
+    def predict_proba(self, X):
         res = []
         for x in X:
-            prob = rec(x, self.root, 1.0).get()
+            prob = self._predict(x, self.root, 1.0).get()
             res.append(np.array([prob[l] for l in self.classes]))
         return res
 
@@ -149,12 +159,5 @@ class MondrianTree(object):
             correct += prob.argmax() == (classes == label).argmax()
         return correct / len(X)
 
-    def get_params(self, deep):
-        return {}
 
 
-# TODO: extends BaseClassifier
-class MondrianTreeClassifier(MondrianTree):
-    def __init__(self):
-        MondrianTree.__init__(self)
-        self.stat_factory = ClassifierFactory()
