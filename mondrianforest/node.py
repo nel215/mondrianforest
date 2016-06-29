@@ -127,8 +127,8 @@ class MondrianTree(object):
 
     def _predict(self, x, node, p_not_separeted_yet):
         d = node.tau - node.get_parent_tau()
-        gamma = np.sum(np.maximum(x-node.min_list, 0) + np.maximum(node.max_list - x, 0))
-        p = 1.0 - np.exp(-d*gamma)
+        eta = np.sum(np.maximum(x-node.min_list, 0) + np.maximum(node.max_list - x, 0))
+        p = 1.0 - np.exp(-d*eta)
         if node.is_leaf:
             w = p_not_separeted_yet * (1.0 - p)
             return node.stat.create_result(x, w)
