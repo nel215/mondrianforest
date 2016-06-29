@@ -127,17 +127,16 @@ class MondrianTree(object):
 
     def _predict(self, x, node, p_not_separeted_yet):
         d = node.tau - node.get_parent_tau()
-        eta = np.sum(np.maximum(x-node.min_list, 0) + np.maximum(node.max_list - x, 0))
+        eta = np.sum(np.maximum(x-node.max_list, 0) + np.maximum(node.min_list - x, 0))
         p = 1.0 - np.exp(-d*eta)
+        result = node.stat.create_result(x, p_not_separeted_yet * p)
         if node.is_leaf:
             w = p_not_separeted_yet * (1.0 - p)
-            return node.stat.create_result(x, w)
-        w = p_not_separeted_yet * p
+            return result.merge(node.stat.create_result(x, w))
         if x[node.delta] <= node.xi:
             child_result = self._predict(x, node.left, p_not_separeted_yet*(1.0-p))
         else:
             child_result = self._predict(x, node.right, p_not_separeted_yet*(1.0-p))
-        result = node.stat.create_result(x, w)
         return result.merge(child_result)
 
     def get_params(self, deep):
