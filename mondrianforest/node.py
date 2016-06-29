@@ -3,6 +3,41 @@ import numpy as np
 from .classifier import Classifier
 
 
+class RegressorResult(object):
+    def __init__(self, avg):
+        self.avg = avg
+
+    def merge(self, r):
+        return RegressorResult(self.avg + r.avg)
+
+    def get(self):
+        return self.avg
+
+
+class Regressor(object):
+    def __init__(self):
+        self.sum = 0
+        self.count = 0
+
+    def add(self, x, y):
+        self.sum += y
+        self.count += 1
+
+    def merge(self, r):
+        res = Regressor()
+        res.sum = self.sum + r.sum
+        res.count = self.count + r.count
+        return res
+
+    def predict(self, x):
+        if self.count == 0:
+            return 0
+        return self.sum / self.count
+
+    def create_result(self, x, w):
+        return RegressorResult(self.predict(x)*w)
+
+
 class Node(object):
     def __init__(self, min_list, max_list, tau, is_leaf, stat, parent=None, delta=None, xi=None):
         self.parent = parent
@@ -39,6 +74,11 @@ class Node(object):
 class ClassifierFactory(object):
     def create(self):
         return Classifier()
+
+
+class RegressorFactory(object):
+    def create(self):
+        return Regressor()
 
 
 class MondrianTree(object):
@@ -160,4 +200,14 @@ class MondrianTreeClassifier(MondrianTree):
         return correct / len(X)
 
 
+class MondrianTreeRegressor(MondrianTree):
+    def __init__(self):
+        MondrianTree.__init__(self)
+        self.stat_factory = RegressorFactory()
 
+    def predict(self, X):
+        res = []
+        for x in X:
+            predicted = self._predict(x, self.root, 1.0).get()
+            res.append(predicted)
+        return res
