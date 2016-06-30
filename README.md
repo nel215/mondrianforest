@@ -17,6 +17,11 @@ scores = cross_validation.cross_val_score(forest, iris.data, iris.target, cv=cv)
 print(scores.mean(), scores.std())
 ```
 
+## License
+
+mondrianforest is licensed under the MIT license.<br/>
+Copyright (c) 2016 nel215
+
 ## References
 
 ### Papers
