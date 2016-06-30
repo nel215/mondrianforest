@@ -3,6 +3,7 @@
 An online random forest implementaion written in Python.
 
 [![Build Status](https://travis-ci.org/nel215/mondrianforest.svg?branch=master)](https://travis-ci.org/nel215/mondrianforest)
+[![PyPI](https://img.shields.io/pypi/v/mondrianforest.svg?maxAge=2592000)](https://pypi.python.org/pypi/mondrianforest)
 
 ## Usage
 
