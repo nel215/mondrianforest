@@ -12,6 +12,7 @@ def test_tree_regression():
     scores = cross_validation.cross_val_score(tree, boston.data, boston.target, cv=cv, scoring='mean_squared_error')
     assert scores.mean() > -65
 
+
 def test_forest_regression():
     np.random.seed(215)
     boston = datasets.load_boston()
