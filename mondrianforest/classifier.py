@@ -67,7 +67,7 @@ class Classifier(object):
             avg = stat['sum']/stat['count']
             var = stat['sq_sum']/stat['count'] - avg*avg + 1e-9
             sig = stat['count']*var/(stat['count'] - 1 + 1e-9)
-            z = np.sqrt(2.0*np.pi)*np.linalg.norm(sig)
+            z = np.power(2.0*np.pi, len(x))*np.linalg.norm(sig)
             prob = np.exp(-0.5 * np.dot(x-avg, x-avg) / np.dot(sig, sig)) / z
             res[label] = prob
         return res
