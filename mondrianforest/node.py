@@ -175,4 +175,4 @@ class MondrianTreeRegressor(MondrianTree):
         for x in X:
             predicted = self._predict(x, self.root, 1.0).get()
             res.append(predicted)
-        return res
+        return np.array(res)
