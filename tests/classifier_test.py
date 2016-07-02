@@ -13,4 +13,8 @@ def test_classifier_stat_update():
     assert stat.stats[0]['count'] == 2
 
     prop = stat.predict_proba(np.array([0, -1, -2]))
+    sum_prob = 0.0
+    for k, v in prop.items():
+        sum_prob += v
+    assert abs(v - 1.0) < 1e-9
     assert prop[1] > prop[0]

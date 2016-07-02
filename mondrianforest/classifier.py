@@ -62,6 +62,7 @@ class Classifier(object):
 
     def predict_proba(self, x):
         res = {}
+        sum_prob = 0.0
         for label, stat in self.stats.items():
             # TODO: case that var is 0 and count <= 1
             avg = stat['sum']/stat['count']
@@ -69,7 +70,10 @@ class Classifier(object):
             sig = stat['count']*var/(stat['count'] - 1 + 1e-9)
             z = np.power(2.0*np.pi, len(x))*np.linalg.norm(sig)
             prob = np.exp(-0.5 * np.dot(x-avg, x-avg) / np.dot(sig, sig)) / z
+            sum_prob += prob
             res[label] = prob
+        for label in res.keys():
+            res[label] /= sum_prob
         return res
 
     def __repr__(self):
